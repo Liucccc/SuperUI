@@ -1,0 +1,69 @@
+﻿
+@{
+    ViewBag.Title = "List";
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+
+<section class="content">
+    <div class="center-Panel" style="overflow-x: hidden">
+        <div class="titlePanel">
+            <div class="title-search">
+                <table>
+                    <tr>
+                        <td>任务状态</td>
+                        <td style="padding-left: 10px;">
+                            <div id="taskStatusCondition" class="btn-group ">
+                                <a class="btn btn-default dropdown-text" data-toggle="dropdown" data-value="" aria-expanded="false">请选择</a>
+                                <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true"><span class="caret"></span></a>
+
+                                <ul class="dropdown-menu " role="menu">
+                                    <li><a data-value="0">未启动</a></li>
+                                    <li><a data-value="1">启动</a></li>
+                                    <li><a data-value="2">已停止</a></li>
+                                    <li><a data-value="3">错误</a></li>
+                                    <li><a data-value="4">已完成</a></li>
+                                </ul>
+                            </div>
+
+                        </td>
+                        <td style="padding-left: 20px;">任务类型</td>
+                        <td style="padding-left: 10px;">
+                            <div id="taskTypeCondition" class="btn-group ">
+                                <a class="btn btn-default dropdown-text" data-toggle="dropdown" data-value="" aria-expanded="false">请选择</a>
+                                <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true"><span class="caret"></span></a>
+
+                                <ul class="dropdown-menu " role="menu">
+
+                                    <li><a data-value="0">单次任务</a></li>
+                                    <li><a data-value="1">重复任务</a></li>
+
+                                </ul>
+                            </div>
+
+                        </td>
+
+                        <td style="padding-left: 20px;">
+                            <a id="btn_Search" class="btn btn-primary lr-search"><i class="fa fa-search "></i>&nbsp;查询</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="toolbar">
+                <div class="btn-group">
+                    <a class="btn btn-default lr-replace"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+                    <a class="btn btn-default lr-add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+                    <a class="btn btn-default lr-edit"><i class="fa fa-pencil-square-o"></i>&nbsp;编辑</a>
+                    <a class="btn btn-default lr-delete"><i class="fa fa-remove"></i>&nbsp;删除</a>
+                    <a class="btn btn-default lr-viewlog"><i class="fa fa-detail"></i>&nbsp;查看任务日志</a>
+                    <a class="btn btn-default lr-start"><i class="fa fa-plus"></i>&nbsp;启动</a>
+                    <a class="btn btn-default lr-stop"><i class="fa fa-trash-o"></i>&nbsp;停止</a>
+                </div>
+                <script></script>
+            </div>
+        </div>
+        <div class="gridPanel">
+            <table id="gridTable"></table>
+            <div id="gridPager" class="gridPager"></div>
+        </div>
+    </div>
+</section>
