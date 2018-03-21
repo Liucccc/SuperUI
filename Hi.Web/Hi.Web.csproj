@@ -942,6 +942,28 @@
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hi.BLL\Hi.BLL.csproj">
+      <Project>{9f168f2e-8618-4cde-b12e-44048f9b59a1}</Project>
+      <Name>Hi.BLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Hi.Common\Hi.Common.csproj">
+      <Project>{88464e5e-de41-4bec-bece-58b0f7bfe3f2}</Project>
+      <Name>Hi.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Hi.DAL\Hi.DAL.csproj">
+      <Project>{a7cb1824-52e5-4db0-b929-c2e60b5d0975}</Project>
+      <Name>Hi.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Hi.Model\Hi.Model.csproj">
+      <Project>{90442470-05a1-40dd-adc3-27413debbe2c}</Project>
+      <Name>Hi.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Hi.sortTitle\Hi.sortTitle.csproj">
+      <Project>{da284138-cc35-4379-8180-a2658b779e6c}</Project>
+      <Name>Hi.sortTitle</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -953,7 +975,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>52766</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

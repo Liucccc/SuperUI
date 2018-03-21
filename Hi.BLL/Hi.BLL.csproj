@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9F168F2E-8618-4CDE-B12E-44048F9B59A1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Hi.BLL</RootNamespace>
+    <AssemblyName>Hi.BLL</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="LitJSON, Version=0.12.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LitJson.0.12.0\lib\net40\LitJSON.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="adminUsers.cs" />
+    <Compile Include="adminUsersLevel.cs" />
+    <Compile Include="Advertise.cs" />
+    <Compile Include="Article.cs" />
+    <Compile Include="ArticleSort.cs" />
+    <Compile Include="Cookie.cs" />
+    <Compile Include="Info.cs" />
+    <Compile Include="Init.cs" />
+    <Compile Include="LawyerFirst.cs" />
+    <Compile Include="LegalAdvice.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Uploadfile.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hi.Common\Hi.Common.csproj">
+      <Project>{88464e5e-de41-4bec-bece-58b0f7bfe3f2}</Project>
+      <Name>Hi.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Hi.DAL\Hi.DAL.csproj">
+      <Project>{a7cb1824-52e5-4db0-b929-c2e60b5d0975}</Project>
+      <Name>Hi.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Hi.Model\Hi.Model.csproj">
+      <Project>{90442470-05a1-40dd-adc3-27413debbe2c}</Project>
+      <Name>Hi.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Hi.sortTitle\Hi.sortTitle.csproj">
+      <Project>{da284138-cc35-4379-8180-a2658b779e6c}</Project>
+      <Name>Hi.sortTitle</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

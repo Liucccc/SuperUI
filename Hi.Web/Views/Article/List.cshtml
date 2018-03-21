@@ -38,7 +38,20 @@
 
                             </ul>
                         </div>
+                    </td>
+                    <td style="padding-left: 20px;">任务类型</td>
+                    <td style="padding-left: 10px;">
+                        <div id="taskTypeCondition" class="btn-group ">
+                            <a class="btn btn-default dropdown-text" data-toggle="dropdown" data-value="" aria-expanded="false">请选择</a>
+                            <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true"><span class="caret"></span></a>
 
+                            <ul class="dropdown-menu " role="menu">
+
+                                <li><a data-value="0">单次任务</a></li>
+                                <li><a data-value="1">重复任务</a></li>
+
+                            </ul>
+                        </div>
                     </td>
 
                     <td style="padding-left: 20px;">
@@ -48,22 +61,19 @@
             </table>
         </div>
         <div class="toolbar">
-            <div class="btn-group">
-                <a class="btn btn-default lr-replace"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
-                <a class="btn btn-default lr-add"><i class="fa fa-plus"></i>&nbsp;新增</a>
-                <a class="btn btn-default lr-edit"><i class="fa fa-pencil-square-o"></i>&nbsp;编辑</a>
-                <a class="btn btn-default lr-delete"><i class="fa fa-remove"></i>&nbsp;删除</a>
-                <a class="btn btn-default lr-viewlog"><i class="fa fa-detail"></i>&nbsp;查看任务日志</a>
-                <a class="btn btn-default lr-start"><i class="fa fa-plus"></i>&nbsp;启动</a>
-                <a class="btn btn-default lr-stop"><i class="fa fa-trash-o"></i>&nbsp;停止</a>
-            </div>
-            <script></script>
+            <a class="btn btn-default lr-replace"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+            <a class="btn btn-default lr-add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+            <a class="btn btn-default lr-edit"><i class="fa fa-pencil-square-o"></i>&nbsp;编辑</a>
+            <a class="btn btn-default lr-delete"><i class="fa fa-remove"></i>&nbsp;删除</a>
+            <a class="btn btn-default lr-viewlog"><i class="fa fa-detail"></i>&nbsp;查看任务日志</a>
+            <a class="btn btn-default lr-start"><i class="fa fa-plus"></i>&nbsp;启动</a>
+            <a class="btn btn-default lr-stop"><i class="fa fa-trash-o"></i>&nbsp;停止</a>
         </div>
     </div>
-    <div class="gridPanel">
-        <table id="gridTable"></table>
-        <div id="gridPager" class="gridPager"></div>
-    </div>
+</div>
+<div class="gridPanel">
+    <table id="gridTable"></table>
+    <div id="gridPager" class="gridPager"></div>
 </div>
 
 
@@ -176,7 +186,7 @@
             $.fn.modalOpen({
                 id: "jobDetailForm",
                 title: '添加任务',
-                url: '/pages/supermgr/JobDetailForm.html',
+                url: '/Article/Add?k=1',
                 width: "750px",
                 height: "550px",
                 callBack: function (iframeId) {
@@ -209,43 +219,48 @@
             exports.options.$gridTable = $("#gridTable");
             exports.options.$gridTable.jqGrid({
                 datatype: "json",
-                url: "/content/supermgr/json/JobDetailGrid.json",
+                mtype: "POST",
+                url: "/Article/GetJQGridJson",
+                postData: { Ostatus: 0, s_hot: 0, s_recommend: 0, d1: "", d2: "", searchText: "", Kind: 51, Asid: "" },
                 height: $.fn.getGridHeight(true),
                 autowidth: true,
                 colModel: [
-                    { label: "主键", name: "Id", hidden: true },
+                    { label: "主键", name: "Aid", hidden: true },
 
-                    { label: "任务名称", name: "TaskName", index: "TaskName", width: 100, align: "left" },
-                    { label: "任务分组", name: "TaskGroupName", index: "TaskGroupName", width: 100, align: "center" },
-                    { label: "任务类型", name: "JobTypeName", index: "JobTypeName", width: 70, align: "center" },
+                    { label: "标题", name: "Atitle", index: "Atitle", width: 300, align: "left" },
+                    { label: "链接", name: "Url", index: "Url", width: 200, align: "center" },
+                    { label: "来源", name: "Source", index: "Source", width: 70, align: "center" },
+                    { label: "作者", name: "Author", index: "Author", width: 100, align: "left" },
                     {
-                        label: "执行状态", name: "TaskStatusName", index: "TaskStatusName", width: 70, align: "center",
-                        formatter: function (cellvalue, options, rowObject) {
-                            var index = rowObject["TaskStatus"];
-                            var className = exports.options.TaskStatusTypes[index];
-                            return '<span class="label ' + className + '">' + cellvalue + '</span>';
-                        }
-                    },
-                    { label: "执行频率", name: "CronDescriptor", index: "CronDescriptor", width: 200, align: "left" },
-                    { label: "程序集", name: "AssemblyDll", index: "AssemblyDll", width: 150, align: "left" },
-                    { label: "类名", name: "Class", index: "Class", width: 250, align: "center" },
-                    {
-                        label: "最近运行时间", name: "RecentRunTime", index: "RecentRunTime", width: 150, align: "left",
+                        label: "提交日期", name: "Atime", index: "Atime", width: 150, align: "left",
                         formatter: function (cellvalue, options, rowObject) {
                             return formatDate(cellvalue, 'yyyy-MM-dd hh:mm:ss');
                         }
                     },
                     {
-                        label: "下次运行时间", name: "LastRunTime", index: "LastRunTime", width: 150, align: "left",
+                        label: "热点文章", name: "Hot", index: "Hot", width: 80, align: "left",
                         formatter: function (cellvalue, options, rowObject) {
-                            return formatDate(cellvalue, 'yyyy-MM-dd hh:mm:ss');
+                            return cellvalue ? "√" : "×";
                         }
-                    }
+                    },
+                    {
+                        label: "推荐文章", name: "Recommend", index: "Recommend", width: 80, align: "left",
+                        formatter: function (cellvalue, options, rowObject) {
+                            return cellvalue ? "√" : "×";
+                        }
+                    },
+                    {
+                        label: "有效", name: "Alive", index: "Alive", width: 80, align: "left",
+                        formatter: function (cellvalue, options, rowObject) {
+                            return cellvalue ? "√" : "×";
+                        }
+                    },
+
 
                 ],
                 pager: "#gridPager",
-                sortname: 'RecentRunTime',
-                rowList: [20, 50, 100, 500, 1000],
+                sortname: 'Aid',
+                rowList: [2,20, 50, 100, 500, 1000],
                 rowNum: "20",
                 sortorder: "desc",
                 rownumbers: true,
@@ -376,131 +391,7 @@
 </script>
 
 <script>
-    $(function () {
-        initGridPage();
-        loadGrid();
-    });
-
-    function initGridPage() {
-
-        //初始化
-        $(window).resize(function (e) {
-            window.setTimeout(function () {
-
-                $('#gridTable').setGridWidth(($('.gridPanel').width()));
-                $("#gridTable").setGridHeight($.fn.getGridHeight(true));
-
-            }, 100);
-            e.stopPropagation();
-        });
-
-        //查询条件
-        $("#taskStatusCondition .dropdown-menu li").click(function () {
-            var text = $(this).find('a').html();
-            var value = $(this).find('a').attr('data-value');
-            $("#taskStatusCondition .dropdown-text").html(text).attr('data-value', value);
-        });
-        $("#taskTypeCondition .dropdown-menu li").click(function () {
-            var text = $(this).find('a').html();
-            var value = $(this).find('a').attr('data-value');
-            $("#taskTypeCondition .dropdown-text").html(text).attr('data-value', value);
-        });
-
-        //查询回车
-        $('#txt_Keyword').bind('keypress', function (event) {
-            if (event.keyCode == "13") {
-                $('.lr-search').trigger("click");
-            }
-        });
-
-        //注册事件
-        $(".titlePanel").on("click", ".lr-replace,.lr-add,.lr-edit,.lr-search,.lr-viewlog,.lr-start,.lr-stop,.lr-delete", function () {
-            var $this = $(this);
-            //刷新
-            if ($this.hasClass('lr-replace')) {
-                reload();
-            }
-            else if ($this.hasClass('lr-search')) {
-                exports.SearchEvent();
-            }
-            else if ($this.hasClass('lr-add')) {
-                exports.btnAdd();
-            }
-            else if ($this.hasClass('lr-edit')) {
-                exports.btnEdit();
-            }
-            else if ($this.hasClass('lr-removelog')) {
-                exports.btnRemoveLog();
-            }
-            else if ($this.hasClass('lr-viewlog')) {
-                exports.btnViewTaskLog();
-            }
-            else if ($this.hasClass('lr-start')) {
-                exports.btnEnabled();
-            }
-            else if ($this.hasClass('lr-stop')) {
-                exports.btnDiabled();
-            }
-            else if ($this.hasClass("lr-delete")) {
-                exports.btnDelete();
-            };
-
-        });
-
-    }
-
-    function loadGrid() {
-        var selectedRowIndex = 0;
-        exports.options.$gridTable = $("#gridTable");
-        exports.options.$gridTable.jqGrid({
-            datatype: "json",
-            url: "/content/supermgr/json/JobDetailGrid.json",
-            height: $.fn.getGridHeight(true),
-            autowidth: true,
-            colModel: [
-                { label: "主键", name: "Id", hidden: true },
-
-                { label: "任务名称", name: "TaskName", index: "TaskName", width: 100, align: "left" },
-                { label: "任务分组", name: "TaskGroupName", index: "TaskGroupName", width: 100, align: "center" },
-                { label: "任务类型", name: "JobTypeName", index: "JobTypeName", width: 70, align: "center" },
-                {
-                    label: "执行状态", name: "TaskStatusName", index: "TaskStatusName", width: 70, align: "center",
-                    formatter: function (cellvalue, options, rowObject) {
-                        var index = rowObject["TaskStatus"];
-                        var className = exports.options.TaskStatusTypes[index];
-                        return '<span class="label ' + className + '">' + cellvalue + '</span>';
-                    }
-                },
-                { label: "执行频率", name: "CronDescriptor", index: "CronDescriptor", width: 200, align: "left" },
-                { label: "程序集", name: "AssemblyDll", index: "AssemblyDll", width: 150, align: "left" },
-                { label: "类名", name: "Class", index: "Class", width: 250, align: "center" },
-                {
-                    label: "最近运行时间", name: "RecentRunTime", index: "RecentRunTime", width: 150, align: "left",
-                    formatter: function (cellvalue, options, rowObject) {
-                        return formatDate(cellvalue, 'yyyy-MM-dd hh:mm:ss');
-                    }
-                },
-                {
-                    label: "下次运行时间", name: "LastRunTime", index: "LastRunTime", width: 150, align: "left",
-                    formatter: function (cellvalue, options, rowObject) {
-                        return formatDate(cellvalue, 'yyyy-MM-dd hh:mm:ss');
-                    }
-                }
-
-            ],
-            pager: "#gridPager",
-            sortname: 'RecentRunTime',
-            rowList: [20, 50, 100, 500, 1000],
-            rowNum: "20",
-            sortorder: "desc",
-            rownumbers: true,
-            onSelectRow: function () {
-                selectedRowIndex = $("#" + this.id).getGridParam('selrow');
-            },
-            gridComplete: function () {
-                $("#" + this.id).setSelection(selectedRowIndex, false);
-            }
-        });
-        exports.SearchEvent(0);
-    }
+    var schedulerMgr = new SchedulerMgr();
+    schedulerMgr.initGridPage();
+    schedulerMgr.loadGrid();
 </script>
