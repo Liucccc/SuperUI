@@ -9,66 +9,30 @@
         <div class="title-search">
             <table>
                 <tr>
-                    <td>任务状态</td>
+                    <td>标题</td>
                     <td style="padding-left: 10px;">
-                        <div id="taskStatusCondition" class="btn-group ">
-                            <a class="btn btn-default dropdown-text" data-toggle="dropdown" data-value="" aria-expanded="false">请选择</a>
-                            <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true"><span class="caret"></span></a>
-
-                            <ul class="dropdown-menu " role="menu">
-                                <li><a data-value="0">未启动</a></li>
-                                <li><a data-value="1">启动</a></li>
-                                <li><a data-value="2">已停止</a></li>
-                                <li><a data-value="3">错误</a></li>
-                                <li><a data-value="4">已完成</a></li>
-                            </ul>
-                        </div>
-
+                        <input type="text" id="s_Keywords" class="form-control" placeholder="标题/来源/作者">
                     </td>
-                    <td style="padding-left: 20px;">任务类型</td>
+                    <td style="padding-left: 20px;">提交日期</td>
                     <td style="padding-left: 10px;">
-                        <div id="taskTypeCondition" class="btn-group ">
-                            <a class="btn btn-default dropdown-text" data-toggle="dropdown" data-value="" aria-expanded="false">请选择</a>
-                            <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true"><span class="caret"></span></a>
-
-                            <ul class="dropdown-menu " role="menu">
-
-                                <li><a data-value="0">单次任务</a></li>
-                                <li><a data-value="1">重复任务</a></li>
-
-                            </ul>
-                        </div>
+                        @Html.DaterangePicker("s_d1")
                     </td>
-                    <td style="padding-left: 20px;">任务类型</td>
-                    <td style="padding-left: 10px;">
-                        <div id="taskTypeCondition" class="btn-group ">
-                            <a class="btn btn-default dropdown-text" data-toggle="dropdown" data-value="" aria-expanded="false">请选择</a>
-                            <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="true"><span class="caret"></span></a>
-
-                            <ul class="dropdown-menu " role="menu">
-
-                                <li><a data-value="0">单次任务</a></li>
-                                <li><a data-value="1">重复任务</a></li>
-
-                            </ul>
-                        </div>
-                    </td>
-
                     <td style="padding-left: 20px;">
                         <a id="btn_Search" class="btn btn-primary lr-search"><i class="fa fa-search "></i>&nbsp;查询</a>
                     </td>
                 </tr>
             </table>
         </div>
-        <div class="toolbar">
-            <a class="btn btn-default lr-replace"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
-            <a class="btn btn-default lr-add"><i class="fa fa-plus"></i>&nbsp;新增</a>
-            <a class="btn btn-default lr-edit"><i class="fa fa-pencil-square-o"></i>&nbsp;编辑</a>
-            <a class="btn btn-default lr-delete"><i class="fa fa-remove"></i>&nbsp;删除</a>
-            <a class="btn btn-default lr-viewlog"><i class="fa fa-detail"></i>&nbsp;查看任务日志</a>
-            <a class="btn btn-default lr-start"><i class="fa fa-plus"></i>&nbsp;启动</a>
-            <a class="btn btn-default lr-stop"><i class="fa fa-trash-o"></i>&nbsp;停止</a>
-        </div>
+    </div>
+    <div class="toolbar">
+        <a class="btn btn-default lr-replace" id="lr-replace" onclick="reload()"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+        <a class="btn btn-default lr-Add" id="lr-Add" onclick="Add()"><i class="fa fa-plus"></i>&nbsp;新增</a>
+        <a class="btn btn-default lr-Edit" id="lr-Edit" onclick="Edit()"><i class="fa fa-pencil-square-o"></i>&nbsp;编辑</a>
+        <a class="btn btn-default lr-Del" id="lr-replace" onclick="Del()"><i class="fa fa-remove"></i>&nbsp;删除</a>
+        <a class="btn btn-default lr-Hot" id="lr-replace" onclick="Hot()"><i class="fa fa-plus"></i>&nbsp;热点</a>
+        <a class="btn btn-default lr-Recommond" id="lr-replace" onclick="Recommond()"><i class="fa fa-trash-o"></i>&nbsp;推荐</a>
+        <a class="btn btn-default lr-Alive" id="lr-replace" onclick="Alive()"><i class="fa fa-trash-o"></i>&nbsp;屏蔽</a>
+        <a class="btn btn-default lr-Layer" id="lr-replace" onclick="Layer()"><i class="fa fa-trash-o"></i>&nbsp;更改序号</a>
     </div>
 </div>
 <div class="gridPanel">
@@ -76,117 +40,109 @@
     <div id="gridPager" class="gridPager"></div>
 </div>
 
-
 <script>
-    var SchedulerMgr = function () {
-        var exports = {};
-        exports.options = {};
-        exports.options.ItemId = "";
-        exports.options.ItemName = "";
-        //任务状态
-        exports.options.TaskStatusTypes = {
-            0: "label label-default",
-            1: "label label-info",
-            2: "label label-warning",
-            3: "label label-danger",
-            4: "label label-success"
-        };
-        //任务类型
-        exports.options.JobTypes = {
-            0: "label label-success",
-            1: "label label-info"
-        }
-        //初始化数据
-        exports.initGridPage = function () {
+    $(function () {
+        loadGrid();
+        //查询事件
+        $("#btn_Search").click(function () {
+            var queryJson = $(".title-search").GetWebControls();
+            $("#gridTable").jqGrid('setGridParam', {
+                postData: { queryJson: JSON.stringify(queryJson) },
+                page: 1
+            }).trigger('reloadGrid');
+        });
+    });
+    function loadGrid() {
+        //初始化
+        $(window).resize(function (e) {
+            window.setTimeout(function () {
 
-            //初始化
-            $(window).resize(function (e) {
-                window.setTimeout(function () {
+                $('#gridTable').setGridWidth(($('.gridPanel').width()));
+                $("#gridTable").setGridHeight($.fn.getGridHeight(true));
 
-                    $('#gridTable').setGridWidth(($('.gridPanel').width()));
-                    $("#gridTable").setGridHeight($.fn.getGridHeight(true));
+            }, 100);
+            e.stopPropagation();
+        });
+        var selectedRowIndex = 0;
+        $gridTable = $("#gridTable");
+        $gridTable.jqGrid({
+            datatype: "json",
+            mtype: "POST",
+            url: "/Article/GetJQGridJson",
+            postData: { Ostatus: 0, s_hot: 0, s_recommend: 0, d1: "", d2: "", searchText: "", Kind: 51, Asid: "" },
+            height: $.fn.getGridHeight(true),
+            autowidth: true,
+            colModel: [
+                { label: "主键", name: "Aid", hidden: true },
 
-                }, 100);
-                e.stopPropagation();
-            });
-
-            //查询条件
-            $("#taskStatusCondition .dropdown-menu li").click(function () {
-                var text = $(this).find('a').html();
-                var value = $(this).find('a').attr('data-value');
-                $("#taskStatusCondition .dropdown-text").html(text).attr('data-value', value);
-            });
-            $("#taskTypeCondition .dropdown-menu li").click(function () {
-                var text = $(this).find('a').html();
-                var value = $(this).find('a').attr('data-value');
-                $("#taskTypeCondition .dropdown-text").html(text).attr('data-value', value);
-            });
-
-            //查询回车
-            $('#txt_Keyword').bind('keypress', function (event) {
-                if (event.keyCode == "13") {
-                    $('.lr-search').trigger("click");
-                }
-            });
-
-            //注册事件
-            $(".titlePanel").on("click", ".lr-replace,.lr-add,.lr-edit,.lr-search,.lr-viewlog,.lr-start,.lr-stop,.lr-delete", function () {
-                var $this = $(this);
-                //刷新
-                if ($this.hasClass('lr-replace')) {
-                    reload();
-                }
-                else if ($this.hasClass('lr-search')) {
-                    exports.SearchEvent();
-                }
-                else if ($this.hasClass('lr-add')) {
-                    exports.btnAdd();
-                }
-                else if ($this.hasClass('lr-edit')) {
-                    exports.btnEdit();
-                }
-                else if ($this.hasClass('lr-removelog')) {
-                    exports.btnRemoveLog();
-                }
-                else if ($this.hasClass('lr-viewlog')) {
-                    exports.btnViewTaskLog();
-                }
-                else if ($this.hasClass('lr-start')) {
-                    exports.btnEnabled();
-                }
-                else if ($this.hasClass('lr-stop')) {
-                    exports.btnDiabled();
-                }
-                else if ($this.hasClass("lr-delete")) {
-                    exports.btnDelete();
-                };
-
-            });
-
-        };
-        //编辑
-        exports.btnEdit = function () {
-            var keyValue = $("#gridTable").jqGridRowValue("Id");
-            var taskName = $("#gridTable").jqGridRowValue("TaskName");
-            if (checkedRow(keyValue)) {
-                $.fn.modalOpen({
-                    id: "jobDetailForm",
-                    title: '编辑【' + taskName + '】任务',
-                    url: '/pages/supermgr/JobDetailForm.html?keyValue=' + keyValue,
-                    width: "750px",
-                    height: "550px",
-                    callBack: function (iframeId) {
-                        top.frames[iframeId].AcceptClick();
+                { label: "标题", name: "Atitle", index: "Atitle", width: 300, align: "left" },
+                { label: "链接", name: "Url", index: "Url", width: 200, align: "left" },
+                { label: "来源", name: "Source", index: "Source", width: 70, align: "left" },
+                { label: "作者", name: "Author", index: "Author", width: 100, align: "center" },
+                {
+                    label: "提交日期", name: "Atime", index: "Atime", width: 150, align: "center",
+                    formatter: function (cellvalue, options, rowObject) {
+                        return formatDate(cellvalue, 'yyyy-MM-dd hh:mm:ss');
                     }
-                });
+                },
+                {
+                    label: "热点文章", name: "Hot", index: "Hot", width: 80, align: "center",
+                    formatter: function (cellvalue, options, rowObject) {
+                        return cellvalue ? "<span class='label label-success'>√</span>" : "<span class='label label-danger'>×</span>";
+                    }
+                },
+                {
+                    label: "推荐文章", name: "Recommend", index: "Recommend", width: 80, align: "center",
+                    formatter: function (cellvalue, options, rowObject) {
+                        return cellvalue ? "<span class='label label-success'>√</span>" : "<span class='label label-danger'>×</span>";
+                    }
+                },
+                {
+                    label: "有效", name: "Alive", index: "Alive", width: 80, align: "center",
+                    formatter: function (cellvalue, options, rowObject) {
+                        return cellvalue ? "<span class='label label-success'>√</span>" : "<span class='label label-danger'>×</span>";
+                    }
+                },
+
+
+            ],
+            pager: "#gridPager",
+            sortname: 'Aid',
+            rowList: [20, 50, 100, 500, 1000],
+            rowNum: "20",
+            sortorder: "desc",
+            rownumbers: true,
+            onSelectRow: function () {
+                selectedRowIndex = $("#" + this.id).getGridParam('selrow');
+            },
+            gridComplete: function () {
+                $("#" + this.id).setSelection(selectedRowIndex, false);
             }
-        }
-        //添加
-        exports.btnAdd = function () {
+        });
+    }
+
+    //新增
+    function Add() {
+        $.fn.modalOpen({
+            id: "jobDetailForm",
+            title: '添加离婚知识',
+            url: '/Article/Add?k=1',
+            width: "750px",
+            height: "550px",
+            callBack: function (iframeId) {
+                top.frames[iframeId].AcceptClick();
+            }
+        });
+    }
+    //编辑
+    function Edit() {
+        var keyValue = $("#gridTable").jqGridRowValue("Aid");
+        var taskName = $("#gridTable").jqGridRowValue("TaskName");
+        if (checkedRow(keyValue)) {
             $.fn.modalOpen({
                 id: "jobDetailForm",
-                title: '添加任务',
-                url: '/Article/Add?k=1',
+                title: '编辑【' + taskName + '】任务',
+                url: '/pages/supermgr/JobDetailForm.html?keyValue=' + keyValue,
                 width: "750px",
                 height: "550px",
                 callBack: function (iframeId) {
@@ -194,204 +150,75 @@
                 }
             });
         }
-
-        //查看任务日志
-        exports.btnViewTaskLog = function () {
-            var keyValue = $("#gridTable").jqGridRowValue("Id");
-            var jobName = $("#gridTable").jqGridRowValue("TaskName");
-            if (checkedRow(keyValue)) {
-                $.fn.modalOpen({
-                    id: "Form",
-                    title: '查看【' + jobName + '】任务日志',
-                    url: '/pages/supermgr/ViewJobLog.html?keyValue=' + keyValue,
-                    width: "900px",
-                    height: "650px",
-                    callBack: function (iframeId) {
-                        // top.frames[iframeId].AcceptClick();
-                    }
-                });
-            }
-        }
-
-        //加载Grid
-        exports.loadGrid = function () {
-            var selectedRowIndex = 0;
-            exports.options.$gridTable = $("#gridTable");
-            exports.options.$gridTable.jqGrid({
-                datatype: "json",
-                mtype: "POST",
-                url: "/Article/GetJQGridJson",
-                postData: { Ostatus: 0, s_hot: 0, s_recommend: 0, d1: "", d2: "", searchText: "", Kind: 51, Asid: "" },
-                height: $.fn.getGridHeight(true),
-                autowidth: true,
-                colModel: [
-                    { label: "主键", name: "Aid", hidden: true },
-
-                    { label: "标题", name: "Atitle", index: "Atitle", width: 300, align: "left" },
-                    { label: "链接", name: "Url", index: "Url", width: 200, align: "center" },
-                    { label: "来源", name: "Source", index: "Source", width: 70, align: "center" },
-                    { label: "作者", name: "Author", index: "Author", width: 100, align: "left" },
-                    {
-                        label: "提交日期", name: "Atime", index: "Atime", width: 150, align: "left",
-                        formatter: function (cellvalue, options, rowObject) {
-                            return formatDate(cellvalue, 'yyyy-MM-dd hh:mm:ss');
-                        }
-                    },
-                    {
-                        label: "热点文章", name: "Hot", index: "Hot", width: 80, align: "left",
-                        formatter: function (cellvalue, options, rowObject) {
-                            return cellvalue ? "√" : "×";
-                        }
-                    },
-                    {
-                        label: "推荐文章", name: "Recommend", index: "Recommend", width: 80, align: "left",
-                        formatter: function (cellvalue, options, rowObject) {
-                            return cellvalue ? "√" : "×";
-                        }
-                    },
-                    {
-                        label: "有效", name: "Alive", index: "Alive", width: 80, align: "left",
-                        formatter: function (cellvalue, options, rowObject) {
-                            return cellvalue ? "√" : "×";
-                        }
-                    },
-
-
-                ],
-                pager: "#gridPager",
-                sortname: 'Aid',
-                rowList: [2,20, 50, 100, 500, 1000],
-                rowNum: "20",
-                sortorder: "desc",
-                rownumbers: true,
-                onSelectRow: function () {
-                    selectedRowIndex = $("#" + this.id).getGridParam('selrow');
-                },
-                gridComplete: function () {
-                    $("#" + this.id).setSelection(selectedRowIndex, false);
+    }
+    //删除
+    function Del() {
+        var keyValue = $("#gridTable").jqGridRowValue("Aid");
+        if (checkedRow(keyValue)) {
+            $.fn.confirmAjax({
+                msg: "注：您确定要【删除】该定时任务么？该删除操作会级联删除任务日志，请谨慎操作！",
+                url: "/SysMgr/SchedulerMgr/DeleteJobStatus",
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#gridTable").trigger("reloadGrid");
                 }
             });
-            exports.SearchEvent(0);
         }
-        //查询表格函数
-        exports.SearchEvent = function () {
-            var queryJson = $("#form1").GetWebControls();
-
-            var taskType = $("#taskTypeCondition .dropdown-text").attr('data-value');
-            var taskStatus = $("#taskStatusCondition .dropdown-text").attr('data-value');
-            queryJson["TaskType"] = taskType;
-            queryJson["TaskStatus"] = taskStatus;
-            $("#gridTable").jqGrid('setGridParam', {
-                url: "/content/supermgr/json/JobDetailGrid.json",
-                postData: queryJson,
-                page: 1
-            }).trigger('reloadGrid');
-        }
-        //验证：项目值、项目名 不能重复
-        exports.OverrideExistField = function (id, url) {
-            $.fn.existField(id, url, { itemId: itemId });
-        }
-
-        //删除
-        exports.btnDelete = function (keyValue) {
-            if (keyValue == undefined) {
-                keyValue = $("#gridTable").jqGridRowValue("Id");
-            }
-            if (checkedRow(keyValue)) {
-                $.fn.confirmAjax({
-                    msg: "注：您确定要【删除】该定时任务么？该删除操作会级联删除任务日志，请谨慎操作！",
-                    url: "/SysMgr/SchedulerMgr/DeleteJobStatus",
-                    param: { keyValue: keyValue },
-                    success: function (data) {
-                        $("#gridTable").trigger("reloadGrid");
-                    }
-                });
-            }
-        }
-        //启用
-        exports.btnEnabled = function (keyValue) {
-            if (keyValue == undefined) {
-                keyValue = $("#gridTable").jqGridRowValue("Id");
-            }
-            if (checkedRow(keyValue)) {
-                $.fn.confirmAjax({
-                    msg: "注：您确定要【启动】该定时任务么？",
-                    url: "/SysMgr/SchedulerMgr/ManageJobStatus",
-                    param: { keyValue: keyValue, jobStatus: 1 },
-                    success: function (data) {
-                        $("#gridTable").trigger("reloadGrid");
-                    }
-                });
-            }
-        }
-        //禁用
-        exports.btnDiabled = function (keyValue) {
-            if (keyValue == undefined) {
-                keyValue = $("#gridTable").jqGridRowValue("Id");
-            }
-            if (checkedRow(keyValue)) {
-                $.fn.confirmAjax({
-                    msg: "注：您确定要【停止】该定时任务么？",
-                    url: "/SysMgr/SchedulerMgr/ManageJobStatus",
-                    param: { keyValue: keyValue, jobStatus: 2 },
-                    success: function (data) {
-                        $("#gridTable").trigger("reloadGrid");
-                    }
-                });
-            }
-        }
-        //保存表单
-        exports.AcceptClick = function () {
-            if (!$('#form1').Validform()) {
-                return false;
-            }
-            var postData = $("#form1").GetWebControls(exports.options.KeyValue);
-
-            $.fn.submitForm({
-                url: "/SysMgr/SchedulerMgr/Save?keyValue=" + exports.options.KeyValue,
-                param: postData,
-                loading: "正在保存数据...",
-                success: function () {
-                    $.currentIframe().$("#gridTable").resetSelection();
-                    $.currentIframe().$("#gridTable").trigger("reloadGrid");
+    }
+    //热点
+    function Hot() {
+        var keyValue = $("#gridTable").jqGridRowValue("Aid");
+        if (checkedRow(keyValue)) {
+            $.fn.confirmAjax({
+                msg: "注：您确定要【删除】该定时任务么？该删除操作会级联删除任务日志，请谨慎操作！",
+                url: "/SysMgr/SchedulerMgr/DeleteJobStatus",
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#gridTable").trigger("reloadGrid");
                 }
             });
-        };
-        //初始化表单
-        exports.initFormControl = function (readonly) {
-            exports.options.KeyValue = $.fn.request("keyValue");
-
-
-
-
-            $("#TaskType").ComboBox({
-                description: "==请选择=="
-            });
-            //获取表单
-            if (!!exports.options.KeyValue) {
-                $.fn.setForm({
-                    url: "/SysMgr/SchedulerMgr/GetJobDetailEntity",
-                    param: { keyValue: exports.options.KeyValue },
-                    success: function (data) {
-                        $("#form1").SetWebControls(data);
-
-                        if (readonly) {
-
-                            // $("#form1").find('.form-control,.ui-select,input,textarea').attr('disabled', 'disabled');
-                            $("#form1").find("#BeginTime,#AssemblyDll,#Class,#TaskType,#CronExpressionString").attr("disabled", 'disabled');
-                            // $("#TaskName,#TaskGroup,#TaskType")
-                        }
-                    }
-                });
-            }
         }
-
-        return exports;
-    };
-</script>
-
-<script>
-    var schedulerMgr = new SchedulerMgr();
-    schedulerMgr.initGridPage();
-    schedulerMgr.loadGrid();
+    }
+    //推荐
+    function Recommond() {
+        var keyValue = $("#gridTable").jqGridRowValue("Aid");
+        if (checkedRow(keyValue)) {
+            $.fn.confirmAjax({
+                msg: "注：您确定要【删除】该定时任务么？该删除操作会级联删除任务日志，请谨慎操作！",
+                url: "/SysMgr/SchedulerMgr/DeleteJobStatus",
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#gridTable").trigger("reloadGrid");
+                }
+            });
+        }
+    }
+    //屏蔽
+    function Alive() {
+        var keyValue = $("#gridTable").jqGridRowValue("Aid");
+        if (checkedRow(keyValue)) {
+            $.fn.confirmAjax({
+                msg: "注：您确定要【删除】该定时任务么？该删除操作会级联删除任务日志，请谨慎操作！",
+                url: "/SysMgr/SchedulerMgr/DeleteJobStatus",
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#gridTable").trigger("reloadGrid");
+                }
+            });
+        }
+    }
+    //更改序号
+    function Layer() {
+        var keyValue = $("#gridTable").jqGridRowValue("Aid");
+        if (checkedRow(keyValue)) {
+            $.fn.confirmAjax({
+                msg: "注：您确定要【删除】该定时任务么？该删除操作会级联删除任务日志，请谨慎操作！",
+                url: "/SysMgr/SchedulerMgr/DeleteJobStatus",
+                param: { keyValue: keyValue },
+                success: function (data) {
+                    $("#gridTable").trigger("reloadGrid");
+                }
+            });
+        }
+    }
 </script>
