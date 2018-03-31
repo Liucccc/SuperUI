@@ -5,23 +5,43 @@
 }
 
 <div class="center-Panel" style="overflow-x: hidden">
-    <div class="titlePanel">
-        <div class="title-search">
-            <table>
-                <tr>
-                    <td>标题</td>
-                    <td style="padding-left: 10px;">
-                        <input type="text" id="s_Keywords" class="form-control" placeholder="标题/来源/作者">
-                    </td>
-                    <td style="padding-left: 20px;">提交日期</td>
-                    <td style="padding-left: 10px;">
-                        @Html.DaterangePicker("s_d1")
-                    </td>
-                    <td style="padding-left: 20px;">
-                        <a id="btn_Search" class="btn btn-primary lr-search"><i class="fa fa-search "></i>&nbsp;查询</a>
-                    </td>
-                </tr>
-            </table>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <label class="control-label  col-sm-1">标题</label>
+            <div class="col-sm-3">
+                <input type="text" id="s_Keywords" class="form-control" placeholder="标题/来源/作者">
+            </div>
+            <label class="control-label col-sm-1">提交日期提交日期</label>
+            <div class="col-sm-3">
+                @Html.DaterangePicker("s_d1")
+            </div>
+            <label class="control-label  col-sm-1">用户名称</label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" id="txt_search_username">
+            </div>
+            <label class="control-label  col-sm-1">用户名称</label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" id="txt_search_username">
+            </div>
+            <label class="control-label  col-sm-1">用户名称</label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" id="txt_search_username">
+            </div>
+            <label class="control-label  col-sm-1">用户名称</label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" id="txt_search_username">
+            </div>
+            <label class="control-label  col-sm-1">用户名称</label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" id="txt_search_username">
+            </div>
+            <label class="control-label  col-sm-1">用户名称</label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" id="txt_search_username">
+            </div>
+            <div class="col-sm-4 text-right">
+                <a id="btn_Search" class="btn btn-primary lr-search"><i class="fa fa-search "></i>&nbsp;查询</a>
+            </div>
         </div>
     </div>
     <div class="toolbar">
